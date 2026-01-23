@@ -47,8 +47,8 @@ public class PatientController {
 
     // put request for updating record of patient
     @PutMapping("/{id}")
-    public void updatePatient(@PathVariable Long id) {
-        patientService.updatePatient(id);
+    public Patient updatePatient(@PathVariable Long id,@RequestBody Patient patient) {
+        return patientService.updatePatient(id, patient);
     }
 
 
