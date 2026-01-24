@@ -2,12 +2,21 @@ package com.learningSpringBoot.spring_boot_app.service;
 
 import com.learningSpringBoot.spring_boot_app.models.Appointment;
 import com.learningSpringBoot.spring_boot_app.models.Patient;
+import com.learningSpringBoot.spring_boot_app.repository.AppointmentRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class AppointmentService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PatientService.class);
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     public List<Appointment> getAllAppointments() {
         try {
@@ -20,11 +29,12 @@ public class AppointmentService {
         }
     }
 
-    public Appointment createAppointment( Appointment appointment) {
+    public Appointment createAppointment( Appointment appointmentRequest) {
         try {
-            System.out.println("info service layer");
+            System.out.println("Appointment confirmed and booked");
+            logger.info("Appointment confirmed with doctorId: {} for patient with id: {}", appointmentRequest.getDoctorId(), appointmentRequest.getPatientId());
             //interact with the repository layer
-            return null;
+            return appointmentRequest;
         } catch (Exception e) {
             System.out.println("Error message: " + e.getMessage());
             return null;

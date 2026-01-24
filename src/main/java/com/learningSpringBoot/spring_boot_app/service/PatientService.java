@@ -5,6 +5,9 @@ import com.learningSpringBoot.spring_boot_app.repository.PatientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,11 +24,29 @@ public class PatientService {
     @Autowired
     private PatientRepository patientRepository;
 
-    public List<Patient> getAllPatients() {
+
+    // now trying to implemnt pagination over here because let suppose there will be thousands or lakhs of records of patient
+    // and if we hit api for getting all patient then performance of system might go down and api will take time to respond as its a large record or dataset.
+    // so pagination concept does that we pass query params for page number and size number of records want to see on that page.
+
+//    public List<Patient> getAllPatients() {
+//        try {
+//            logger.info("Fetching all patients");
+//            //interact with the repository layer
+//            return patientRepository.findAll();
+//        } catch (Exception e) {
+//            logger.error("An error occured while fetching all Patients: {}", e.getMessage());
+//            return null;
+//        }
+//    }
+
+
+    public Page<Patient> getAllPatients(int page, int size) {
         try {
             logger.info("Fetching all patients");
             //interact with the repository layer
-            return patientRepository.findAll();
+            Pageable pageable = PageRequest.of(page, size);
+            return patientRepository.findAll(pageable);
         } catch (Exception e) {
             logger.error("An error occured while fetching all Patients: {}", e.getMessage());
             return null;

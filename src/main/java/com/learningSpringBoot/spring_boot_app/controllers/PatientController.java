@@ -6,6 +6,7 @@ package com.learningSpringBoot.spring_boot_app.controllers;
 import com.learningSpringBoot.spring_boot_app.models.Patient;
 import com.learningSpringBoot.spring_boot_app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +20,17 @@ public class PatientController {
     private PatientService patientService;
 
     // get request for fetching all patients
+//    @GetMapping
+//    public List<Patient> getAllPatients() {
+//        System.out.println("Fetching the patients");
+//        return patientService.getAllPatients();
+//    }
+
+    // for implementing concept of pagination
     @GetMapping
-    public List<Patient> getAllPatients() {
+    public Page<Patient> getAllPatients(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
         System.out.println("Fetching the patients");
-        return patientService.getAllPatients();
+        return patientService.getAllPatients(page, size);
     }
 
     // post request for creating patient record
