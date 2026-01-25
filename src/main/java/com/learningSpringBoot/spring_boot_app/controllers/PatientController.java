@@ -7,9 +7,11 @@ import com.learningSpringBoot.spring_boot_app.models.Patient;
 import com.learningSpringBoot.spring_boot_app.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/patients")
@@ -42,21 +44,21 @@ public class PatientController {
 
     // get request to fetch patient by id
     @GetMapping("/{id}")
-    public Patient getPatientById(@PathVariable Long id) {
+    public ResponseEntity<Patient> getPatientById(@PathVariable Long id) {
         System. out.println("Fetching id by ID");
-        return patientService.getPatientById(id);
+        return ResponseEntity.ok(patientService.getPatientById(id));
     }
 
     // delete request to delete a record of patient
     @DeleteMapping("/{id}")
-    public void deletePatient(@PathVariable Long id) {
-        patientService.deletePatient(id);
+    public ResponseEntity<Patient> deletePatient(@PathVariable Long id) {
+        return ResponseEntity.ok(patientService.deletePatient(id));
     }
 
     // put request for updating record of patient
     @PutMapping("/{id}")
-    public Patient updatePatient(@PathVariable Long id,@RequestBody Patient patient) {
-        return patientService.updatePatient(id, patient);
+    public ResponseEntity<Patient> updatePatient(@PathVariable Long id,@RequestBody Patient patient) {
+        return ResponseEntity.ok(patientService.updatePatient(id, patient));
     }
 
 

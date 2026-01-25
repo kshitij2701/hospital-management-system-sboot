@@ -4,6 +4,7 @@ import com.learningSpringBoot.spring_boot_app.models.Doctor;
 import com.learningSpringBoot.spring_boot_app.models.Patient;
 import com.learningSpringBoot.spring_boot_app.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +21,15 @@ public class DoctorController {
 
     // get request for fetching all doctors
     @GetMapping
-    public List<Doctor> getAllDoctors() {
+    public Page<Doctor> getAllDoctors(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
         System.out.println("Fetching the doctors");
-        return doctorService.getAllDoctors();
+        return doctorService.getAllDoctors(page, size);
     }
 
     // post request for creating doctor record
     @PostMapping
     public Doctor createDoctor(@RequestBody Doctor doctor) {
-        System.out.println("creating doctor");
+        System.out.println("creating doctor record");
         return doctorService.createDoctor(doctor);
     }
 

@@ -1,5 +1,6 @@
 package com.learningSpringBoot.spring_boot_app.service;
 
+import com.learningSpringBoot.spring_boot_app.exception.ResourceNotFoundException;
 import com.learningSpringBoot.spring_boot_app.models.Patient;
 import com.learningSpringBoot.spring_boot_app.repository.PatientRepository;
 import org.slf4j.Logger;
@@ -66,59 +67,57 @@ public class PatientService {
     }
 
     public Patient getPatientById(Long id) {
-        try {
+
             logger.info("Fetching Patient with id: {}", id);
+            return patientRepository.findById(id).orElseThrow(() -> {
+                logger.warn("Patient with id {} not found", id);
+                return new ResourceNotFoundException(
+                        "Patient with id " + id + " not found"
+                );
+            });
             //interact with the repository layer
-            Optional<Patient> patient = patientRepository.findById(id); // optional providing null safety
-            return patient.orElse(null);
-        } catch (Exception e) {
-            logger.error("An error occured while fetching Patient with id {} : {}",id, e.getMessage());
-            return null;
-        }
+            //  Optional<Patient> patient = patientRepository.findById(id); // optional providing null safety
+            // return patient.orElse(null);
     }
 
-    public void deletePatient(Long id) {
-        try {
+    public Patient deletePatient(Long id) {
+
             logger.info("Deleting patient with id {}", id);
             //interact with the repository layer
-            if (!patientRepository.existsById(id)) {
-                logger.warn("Cannot delete. Patient not found with id: {}", id);
-                return;
-            }
-            patientRepository.deleteById(id);
+            Patient patient = patientRepository.findById(id).orElseThrow(() -> {
+                logger.warn("Patient with id {} not found", id);
+                return new ResourceNotFoundException(
+                        "Patient with id " + id + " not found so Deletion not possible"
+                );
+            });
+            patientRepository.delete(patient);
             logger.info("Patient deleted successfully with id: {}", id);
-        } catch (Exception e) {
-            logger.error("Error while deleting Patient with id {} : {} ", id,  e.getMessage());
-        }
+            return patient;
+
     }
 
     public Patient updatePatient(Long id, Patient patient) {
-        try {
-            logger.info("Updating patient info with id {}", id);
-            //interact with the repository layer
-            Optional<Patient> existingPatient = patientRepository.findById(id);
-            if(existingPatient.isPresent()){
-                Patient p = existingPatient.get();
-                if(patient.getName() != null){
-                    p.setName(patient.getName());
-                }
-                if(patient.getGender() !=  null){
-                    p.setGender(patient.getGender());
-                }
-                if(patient.getAge() !=  null){
-                    p.setAge(patient.getAge());
-                }
-                patientRepository.save(p);
-                return p;
 
-            } else {
-                logger.warn("Patient with id: {} not found", id);
-                return null;
+            logger.info("Updating patient info with id {}", id);
+            Patient existingPatient = patientRepository.findById(id).orElseThrow(() ->
+                    new ResourceNotFoundException(
+                            "Patient not found with id " + id + " so how update possible"
+                    )
+            );
+
+            //interact with the repository layer
+            // Optional<Patient> existingPatient = patientRepository.findById(id);
+
+            if(patient.getName() != null){
+                existingPatient.setName(patient.getName());
             }
-        } catch (Exception e) {
-            logger.error("Error while updating patient with id {} : {}", id, e.getMessage());
-            return null;
-        }
+            if(patient.getGender() !=  null){
+                existingPatient.setGender(patient.getGender());
+            }
+            if(patient.getAge() !=  null){
+                existingPatient.setAge(patient.getAge());
+            }
+            return patientRepository.save(existingPatient);
     }
 
 

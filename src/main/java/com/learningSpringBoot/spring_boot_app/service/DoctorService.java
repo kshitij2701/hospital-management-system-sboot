@@ -7,6 +7,9 @@ import com.learningSpringBoot.spring_boot_app.repository.PatientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +23,12 @@ public class DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    public List<Doctor> getAllDoctors() {
+    public Page<Doctor> getAllDoctors(int page, int size) {
         try {
             logger.info("Fetching all doctors");
             //interact with the repository layer
-            return doctorRepository.findAll();
+            Pageable pageable = PageRequest.of(page, size);
+            return doctorRepository.findAll(pageable);
         } catch (Exception e) {
             logger.error("An error occured while fetching all doctors: {}", e.getMessage());
             return null;
@@ -33,7 +37,7 @@ public class DoctorService {
 
     public Doctor createDoctor( Doctor doctor) {
         try {
-            logger.info("Creating New Doctor");
+            logger.info("Creating New Doctor record");
             //interact with the repository layer
             doctorRepository.save(doctor);
             return doctor;
@@ -60,7 +64,7 @@ public class DoctorService {
             logger.info("Deleting Doctor with id {}", id);
             //interact with the repository layer
             if (!doctorRepository.existsById(id)) {
-               logger.warn("Cannot delete Doctor not found with id: {}", id);
+               logger.warn("Cannot delete, Doctor not found with id: {}", id);
                return false;
             }
             doctorRepository.deleteById(id);
