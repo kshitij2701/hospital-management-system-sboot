@@ -16,6 +16,20 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+
+    @ExceptionHandler(SlotAlreadyBookedException.class)
+    public ResponseEntity<ApiError> handleSlotBooked(SlotAlreadyBookedException ex) {
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiError(
+                        "CONFLICT ISSUE SLOT ALREADY BOOKED",
+                        ex.getMessage()
+                ));
+
+    }
+
+
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

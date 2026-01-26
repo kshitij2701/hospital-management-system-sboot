@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Builder
 @AllArgsConstructor
@@ -17,7 +19,10 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private long patientId;
-    private long doctorId;
-    private String date;
+    private Long patientId;
+    private Long doctorId;
+    private LocalDate appointmentDate;
+    private String timeSlot;
 }
+
+
