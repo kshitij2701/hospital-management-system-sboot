@@ -35,32 +35,15 @@ public class DoctorController {
 
     // get request to fetch doctor by id
     @GetMapping("/{id}")
-    public Doctor getDoctorById(@PathVariable Long id) {
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
         System. out.println("Fetching id by ID");
-        return doctorService.getDoctorById(id);
+        return ResponseEntity.ok(doctorService.getDoctorById(id));
     }
 
     // delete request to delete a record of doctor
     @DeleteMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> deleteDoctor(@PathVariable Long id) {
-        boolean deleted = doctorService.deleteDoctor(id);
-        if (deleted) {
-            return ResponseEntity.ok(
-                    Map.of(
-                    "status", "success",
-                    "message", "Doctor deleted successfully",
-                    "id", id
-                    )
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    Map.of(
-                    "status", "error",
-                    "message", "Doctor with id " + id + " not found",
-                    "id", id
-                    )
-            );
-        }
+    public ResponseEntity<Doctor> deleteDoctor(@PathVariable Long id) {
+        return ResponseEntity.ok(doctorService.deleteDoctor(id));
     }
 
     // put request for updating record of doctor

@@ -1,5 +1,6 @@
 package com.learningSpringBoot.spring_boot_app.service;
 
+import com.learningSpringBoot.spring_boot_app.exception.ResourceNotFoundException;
 import com.learningSpringBoot.spring_boot_app.models.Doctor;
 import com.learningSpringBoot.spring_boot_app.models.Patient;
 import com.learningSpringBoot.spring_boot_app.repository.DoctorRepository;
@@ -48,62 +49,47 @@ public class DoctorService {
     }
 
     public Doctor getDoctorById(Long id) {
-        try {
-            logger.info("Fetching Doctor with id: {}", id);
-            //interact with the repository layer
-            Optional<Doctor> doctor = doctorRepository.findById(id); // optional providing null safety
-            return doctor.orElse(null);
-        } catch (Exception e) {
-            logger.error("An error occured while fetching Patient with id {} : {}",id, e.getMessage());
-            return null;
-        }
+        logger.info("Fetching Doctor with id: {}", id);
+        return doctorRepository.findById(id).orElseThrow(() -> {
+            logger.warn("Doctor with id {} not found", id);
+            return new ResourceNotFoundException(
+                    "Doctor with id " + id + " not found"
+            );
+        });
     }
 
-    public boolean deleteDoctor(Long id) {
-        try {
-            logger.info("Deleting Doctor with id {}", id);
-            //interact with the repository layer
-            if (!doctorRepository.existsById(id)) {
-               logger.warn("Cannot delete, Doctor not found with id: {}", id);
-               return false;
-            }
-            doctorRepository.deleteById(id);
-            logger.info("Doctor deleted successfully with id: {}", id);
-            return true;
-        } catch (Exception e) {
-            logger.error("Error while deleting Doctor with id {} : {} ", id,  e.getMessage());
-            return false;
-        }
+    public Doctor deleteDoctor(Long id) {
+        logger.info("Deleting Doctor with id {}", id);
+        Doctor doctor = doctorRepository.findById(id).orElseThrow(() -> {
+            logger.warn("Doctor with id {} not found", id);
+            return new ResourceNotFoundException(
+                    "Doctor with id " + id + " not found so Deletion not possible"
+            );
+        });
+        doctorRepository.delete(doctor);
+        logger.info("Doctor deleted successfully with id: {}", id);
+        return doctor;
     }
 
     public Doctor updateDoctor(Long id, Doctor doctor) {
-        try {
-            logger.info("Updating doctor info with id {}", id);
-            //interact with the repository layer
-            Optional<Doctor> existingDoctor = doctorRepository.findById(id);
-            if(existingDoctor.isPresent()){
-                Doctor d = existingDoctor.get();
-                if(doctor.getName() != null){
-                    d.setName(doctor.getName());
-                }
-                if(doctor.getSpeciality() !=  null){
-                    d.setSpeciality(doctor.getSpeciality());
-                }
-                if(doctor.getAge() !=  null){
-                    d.setAge(doctor.getAge());
-                }
-                doctorRepository.save(d);
-                return d;
+        logger.info("Updating doctor info with id {}", id);
+        Doctor existingDoctor = doctorRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException(
+                        "Doctor not found with id " + id + " so how update possible"
+                )
+        );
+        //interact with the repository layer
+        // Optional<Patient> existingPatient = patientRepository.findById(id);
 
-            } else {
-                logger.warn("Doctor with id: {} not found", id);
-                return null;
-            }
-        } catch (Exception e) {
-            logger.error("Error while updating doctor with id {} : {}", id, e.getMessage());
-            return null;
+        if(doctor.getName() != null){
+            existingDoctor.setName(doctor.getName());
         }
+        if(doctor.getSpeciality() !=  null){
+            existingDoctor.setSpeciality(doctor.getSpeciality());
+        }
+        if(doctor.getAge() !=  null){
+            existingDoctor.setAge(doctor.getAge());
+        }
+        return doctorRepository.save(existingDoctor);
     }
-
-
 }
