@@ -118,12 +118,17 @@ public class AppointmentService {
 
     }
 
-    public void updateAppointment(Long id) {
-        try {
-            System.out.println("info service layer");
-            //interact with the repository layer
-        } catch (Exception e) {
-            System.out.println("Error message: " + e.getMessage());
-        }
+    public Appointment updateAppointment(Long id, Appointment updateAppointmentRequest) {
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Appointment not found with id " + id)
+                );
+
+        appointment.setDoctorId(updateAppointmentRequest.getDoctorId());
+        appointment.setAppointmentDate(updateAppointmentRequest.getAppointmentDate());
+        appointment.setTimeSlot(updateAppointmentRequest.getTimeSlot());
+
+        return appointmentRepository.save(appointment);
     }
 }

@@ -64,10 +64,10 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.deleteAppointment(id));
     }
 
-//    // put request for updating appointment details
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody Appointment appointment) {
-//        return ResponseEntity.ok(appointmentService.updateAppointment(id));
-//    }
+    // put request for updating appointment details
+    @PutMapping("/{id}")
+    public ResponseEntity<Appointment> updateAppointment(@PathVariable Long id, @RequestBody Appointment appointment) {
+        return ResponseEntity.ok(appointmentService.updateAppointment(id, appointment));
+    }
 
 }
